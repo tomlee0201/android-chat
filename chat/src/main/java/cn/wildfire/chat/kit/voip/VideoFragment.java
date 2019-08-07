@@ -1,5 +1,6 @@
 package cn.wildfire.chat.kit.voip;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -81,6 +82,8 @@ public class VideoFragment extends Fragment implements AVEngineKit.CallSessionCa
         fragment.setArguments(args);
         return fragment;
     }
+
+    private AsyncTask<Void,Void,Void> answerTask;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -173,13 +176,44 @@ public class VideoFragment extends Fragment implements AVEngineKit.CallSessionCa
         // TODO
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        answerTask = new AsyncTask<Void,Void,Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                VideoFragment.this.accept();
+            }
+        };
+
+        answerTask.execute();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (answerTask != null) {
+            answerTask.cancel(true);
+            answerTask = null;
+        }
+    }
+
     @OnClick(R.id.acceptImageView)
     public void accept() {
         AVEngineKit.CallSession session = gEngineKit.getCurrentSession();
         if (session != null && session.getState() == AVEngineKit.CallState.Incoming) {
             session.answerCall(false);
-        } else {
-            getActivity().finish();
         }
     }
 

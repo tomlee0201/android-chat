@@ -124,7 +124,7 @@
         <activity
             android:name="cn.wildfire.chat.kit.preview.MMPreviewActivity"
             android:theme="@style/AppTheme.FullScreen" />
-        <activity android:name="cn.wildfire.chat.kit.voip.SingleVoipCallActivity">
+        <activity android:name="cn.wildfire.chat.kit.voip.SingleVoipCallActivity" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="${applicationId}.kit.voip.single" />
                 <category android:name="android.intent.category.DEFAULT" />
